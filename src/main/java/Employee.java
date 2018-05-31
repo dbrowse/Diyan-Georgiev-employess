@@ -6,6 +6,7 @@ public class Employee {
     private Long projectId;
     private LocalDate dateFrom;
     private LocalDate dateTo;
+    private Long workedDays;
 
     public Long getEmpId () {
         return empId;
@@ -40,6 +41,14 @@ public class Employee {
     }
 
 
+    public Long getWorkedDays () {
+        return workedDays;
+    }
+
+    public void setWorkedDays (Long workedDays) {
+        this.workedDays = workedDays;
+    }
+
     @Override
     public String toString () {
         return "Employee{" +
@@ -47,6 +56,7 @@ public class Employee {
             ", projectId=" + projectId +
             ", dateFrom=" + dateFrom +
             ", dateTo=" + dateTo +
+            ", workedDays=" + workedDays +
             '}';
     }
 }

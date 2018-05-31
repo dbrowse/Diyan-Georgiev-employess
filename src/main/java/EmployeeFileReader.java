@@ -1,10 +1,18 @@
 import sun.util.resources.LocaleData;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 public class EmployeeFileReader {
@@ -27,6 +35,8 @@ public class EmployeeFileReader {
                        employee.setProjectId(Long.valueOf(s[1]));
 
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+
                         LocalDate dateFrom = LocalDate.parse(s[2], formatter);
 
 
@@ -41,6 +51,10 @@ public class EmployeeFileReader {
                         employee.setDateFrom(dateFrom);
                         employee.setDateTo(dateTo);
 
+                        long days = dateFrom.until( dateTo, ChronoUnit.DAYS);
+
+                        employee.setWorkedDays(days);
+
                         employeeList.add(employee);
 
                     }
@@ -51,5 +65,24 @@ public class EmployeeFileReader {
         }
 
         return employeeList;
+
     }
-}
+
+
+        private static DateTimeFormatter[] parseFormatters = Stream.of("M/yy", "M/y", "M/d/y", "M-d-y")
+            .map(DateTimeFormatter::ofPattern)
+            .toArray(DateTimeFormatter[]::new);
+
+        public static YearMonth parseYearMonth(String input) {
+            for (DateTimeFormatter formatter : parseFormatters) {
+                try {
+                    return YearMonth.parse(input, formatter);
+                } catch (DateTimeParseException dtpe) {
+                    // ignore, try next format
+                }
+            }
+            throw new IllegalArgumentException("Could not parse " + input);
+        }
+    }
+
+
